@@ -1,0 +1,3 @@
+const { contextBridge, ipcRenderer } = require('electron');
+const inv=(c,...a)=>ipcRenderer.invoke('desk:'+c,...a);
+contextBridge.exposeInMainWorld('desktop',{isDesktop:true,getWinMode:()=>inv('getWinMode'),setWinMode:m=>inv('setWinMode',m),onWinMode:cb=>ipcRenderer.on('desk:winMode',(_e,m)=>cb(m)),info:()=>inv('info'),openFolder:(k,s)=>inv('openFolder',k,s),chooseRoot:()=>inv('chooseRoot'),writeState:s=>inv('writeState',s),readState:()=>inv('readState'),backup:(n,s)=>inv('backup',n,s),autoBackup:s=>inv('autoBackup',s),listBackups:()=>inv('listBackups'),readBackup:n=>inv('readBackup',n),saveMedia:(f,n,b)=>inv('saveMedia',f,n,b),mediaUrl:r=>inv('mediaUrl',r),deleteMedia:r=>inv('deleteMedia',r),showMedia:r=>inv('showMedia',r)});
