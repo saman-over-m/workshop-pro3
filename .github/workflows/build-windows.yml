@@ -2,28 +2,45 @@ name: Build Windows installer
 on:
   workflow_dispatch:
   push:
+    branches: [main]
     tags: ['v*']
 permissions:
   contents: write
 jobs:
   build:
     runs-on: windows-latest
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 20
       - name: Install
-        run: npm install
+        run: npm install --no-audit --no-fund
+      - name: Validate JavaScript
+        shell: pwsh
+        run: |
+          node --check electron/main.js
+          node --check electron/preload.js
+          node --check electron/storage.js
+          node --check app/factor/app.js
       - name: Build installer
         run: npm run dist
         env:
           CSC_IDENTITY_AUTO_DISCOVERY: "false"
+      - name: Verify installer
+        shell: pwsh
+        run: |
+          $exe = Get-ChildItem dist -Filter '*.exe' -ErrorAction SilentlyContinue
+          if (-not $exe) { throw 'No EXE was produced.' }
+          $exe | Select-Object FullName, Length
       - name: Upload installer
         uses: actions/upload-artifact@v4
         with:
           name: WorkshopPro-Windows-Installer
           path: dist/*.exe
+          if-no-files-found: error
+          retention-days: 14
       - name: Attach to GitHub Release (tags only)
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
