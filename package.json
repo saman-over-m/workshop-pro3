@@ -9,7 +9,7 @@
   "build": {
     "appId":"ir.workshoppro.app","productName":"WorkshopPro","copyright":"WorkshopPro",
     "directories":{"output":"dist","buildResources":"build"},
-    "files":["electron/**/*","app/**/*","build/icon.png","package.json"],
+    "files":["electron/**/*","app/**/*","build/icon.ico","package.json"],
     "artifactName":"WorkshopPro-Setup-${version}.exe",
     "win":{"icon":"build/icon.ico","target":[{"target":"nsis","arch":["x64"]}]},
     "nsis":{"oneClick":false,"perMachine":false,"allowToChangeInstallationDirectory":true,"createDesktopShortcut":true,"createStartMenuShortcut":true,"shortcutName":"ورکشاپ پرو","deleteAppDataOnUninstall":false}
